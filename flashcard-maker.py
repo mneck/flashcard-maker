@@ -7,3 +7,5 @@ df = pd.read_excel(excel_file)
 df.to_csv("output.csv", index=False)
 
 print(df.head())
+
+# df.tosql

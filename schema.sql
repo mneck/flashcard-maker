@@ -64,6 +64,7 @@ ALTER SEQUENCE public.languages_id_seq OWNED BY public.languages.id;
 
 CREATE TABLE public.terms (
     id_vocabulary integer NOT NULL,
+    language_id integer NOT NULL,
     english_term text,
     target_language_term text,
     transliteration text,
@@ -145,6 +146,14 @@ ALTER TABLE ONLY public.languages
 
 ALTER TABLE ONLY public.terms
     ADD CONSTRAINT terms_pkey PRIMARY KEY (id_vocabulary);
+
+
+--
+-- Name: terms fk_terms_language; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.terms
+    ADD CONSTRAINT fk_terms_language FOREIGN KEY (language_id) REFERENCES public.languages(id) ON DELETE RESTRICT;
 
 
 --
