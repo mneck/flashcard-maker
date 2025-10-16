@@ -131,5 +131,5 @@ if __name__ == "__main__":
     engine = create_engine(db_url)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     app = create_app(SessionLocal)
-    port = int(os.getenv("APP_PORT", "8002"))
+    port = int(os.getenv("APP_PORT", "8000"))
     uvicorn.run(app, host="0.0.0.0", port=port)
