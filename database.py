@@ -1,18 +1,8 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Numeric
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Numeric
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import relationship
 from datetime import datetime
-import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env if present
-load_dotenv()
-
-# Database configuration - PostgreSQL
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 class Language(Base):
@@ -55,14 +45,5 @@ class VocabRaw(Base):
     learned = Column(Numeric)
     correct_counter = Column(Numeric)
 
-# Dependency to get database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# Create tables
-def create_tables():
-    Base.metadata.create_all(bind=engine)
+# This module now only defines ORM models and Base.
+ # Engines/sessions and get_db dependency are provided by the app factory.

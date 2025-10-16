@@ -10,49 +10,30 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import database  # now resolvable
-from main import app
+from main import create_app
 from fastapi.testclient import TestClient
 
 
-@pytest.fixture(scope="session", autouse=True)
-def test_db_setup():
+@pytest.fixture(scope="session")
+def test_sessionmaker():
     # Dedicated SQLite engine for tests; allow cross-thread usage
     test_engine = create_engine(
         "sqlite:///./test_db.sqlite3", connect_args={"check_same_thread": False}
     )
     TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-
-    # Monkey-patch the app's DB bindings
-    database.engine = test_engine
-    database.SessionLocal = TestSessionLocal
-
-    # Create schema once per session
-    database.Base.metadata.create_all(bind=test_engine)
-
-    # Override dependency
-    def override_get_db():
-        db = TestSessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[database.get_db] = override_get_db
-
-    yield
-
-    # Clean up
+    yield TestSessionLocal
     database.Base.metadata.drop_all(bind=test_engine)
 
 
 @pytest.fixture(autouse=True)
-def seed_minimal_data():
+def seed_minimal_data(test_sessionmaker):
     """Seed one language and one term before each test using the test session."""
-    db = database.SessionLocal()
+    bind = test_sessionmaker.kw.get("bind")
+    database.Base.metadata.drop_all(bind=bind)
+    database.Base.metadata.create_all(bind=bind)
+    db = test_sessionmaker()
     try:
-        # Ensure clean tables each test
-        database.Base.metadata.drop_all(bind=database.engine)
-        database.Base.metadata.create_all(bind=database.engine)
+        # Tables already recreated above using the test bind
 
         lang = database.Language(code="ar", name="Arabic")
         db.add(lang)
@@ -72,8 +53,10 @@ def seed_minimal_data():
 
 
 @pytest.fixture
-def client(seed_minimal_data):
-    # Ensure seeding ran before creating the client/app
+def client(seed_minimal_data, test_sessionmaker):
+    # Build app with DI using the test sessionmaker
+    from fastapi.testclient import TestClient
+    app = create_app(test_sessionmaker)
     return TestClient(app)
 
 

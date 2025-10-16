@@ -7,8 +7,9 @@ Run this after setting up the database schema
 import os
 from dotenv import load_dotenv
 import pandas as pd
-from sqlalchemy.orm import Session
-from database import SessionLocal, Language, Term, create_tables
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database import Language, Term, Base
 
 def migrate_data():
     """Migrate data from CSV to database"""
@@ -17,9 +18,14 @@ def migrate_data():
     project_root = os.getenv("PROJECT_ROOT", "")
     csv_path = os.path.join(project_root, "output.csv") if project_root else "output.csv"
 
-    # Create tables
-    create_tables()
-    
+    # Build engine/session locally from env
+    db_url = os.getenv("DATABASE_URL")
+    engine = create_engine(db_url)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    # Ensure tables exist
+    Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
     
     try:

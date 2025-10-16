@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from pydantic import ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -23,8 +24,7 @@ class TermResponse(TermBase):
     learned: bool
     correct_counter: int
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class FlashcardResponse(BaseModel):
     id_vocabulary: int
@@ -36,8 +36,7 @@ class FlashcardResponse(BaseModel):
     notes: Optional[str] = None
     correct_counter: int
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class AnswerRequest(BaseModel):
     term_id: int
