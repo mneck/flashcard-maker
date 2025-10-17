@@ -14,6 +14,9 @@ help:
 	@echo "  make frontend           # Run Vite dev server (frontend)"
 	@echo "  make frontend-build     # Build frontend"
 	@echo "  make frontend-preview   # Preview built frontend"
+	@echo "  make dc-up              # docker compose up (build)"
+	@echo "  make dc-down            # docker compose down"
+	@echo "  make dc-logs            # tail logs for all services"
 
 backend:
 	. venv/bin/activate && APP_PORT=$(APP_PORT) python main.py
@@ -44,5 +47,14 @@ frontend-build:
 
 frontend-preview:
 	cd frontend && yarn preview
+
+dc-up:
+	docker compose up -d --build
+
+dc-down:
+	docker compose down -v
+
+dc-logs:
+	docker compose logs -f --tail=100
 
 

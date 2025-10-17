@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
+from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, text, func
 import random
 import re
 import os
@@ -50,6 +51,7 @@ def create_app(session_maker: sessionmaker) -> FastAPI:
     async def get_random_flashcard(
         language_code: str = Query("ar", description="Language code (e.g., 'ar' for Arabic)"),
         learned_only: bool = Query(False, description="Show only learned terms"),
+        exclude_id: Optional[int] = Query(None, description="Exclude this term id from selection"),
         db: Session = Depends(get_db)
     ):
         language = db.query(Language).filter(Language.code == language_code).first()
@@ -61,11 +63,12 @@ def create_app(session_maker: sessionmaker) -> FastAPI:
             query = query.filter(Term.learned == True)
         else:
             query = query.filter(Term.correct_counter < 3)
-
-        terms = query.all()
-        if not terms:
+        if exclude_id is not None:
+            query = query.filter(Term.id_vocabulary != exclude_id)
+        term = query.order_by(func.random()).first()
+        if term is None:
             raise HTTPException(status_code=404, detail="No flashcards available")
-        return random.choice(terms)
+        return term
 
     @app.post("/flashcards/answer", response_model=AnswerResponse)
     async def submit_answer(
@@ -121,6 +124,14 @@ def create_app(session_maker: sessionmaker) -> FastAPI:
     async def get_languages(db: Session = Depends(get_db)):
         languages = db.query(Language).all()
         return [{"id": lang.id, "code": lang.code, "name": lang.name} for lang in languages]
+
+    @app.get("/health")
+    async def health(db: Session = Depends(get_db)):
+        try:
+            db.execute(text("SELECT 1"))
+            return {"status": "ok"}
+        except Exception as exc:
+            raise HTTPException(status_code=503, detail=f"db_unhealthy: {exc}")
 
     return app
 

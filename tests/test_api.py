@@ -28,3 +28,15 @@ def test_submit_answer_correct_increments(client):
     assert r2.json()["correct"] is True
 
 
+def test_random_flashcard_unknown_language_returns_404(client):
+    r = client.get("/flashcards/random", params={"language_code": "xx"})
+    assert r.status_code == 404
+    assert r.json().get("detail") == "Language not found"
+
+
+def test_random_flashcard_learned_only_when_none_available_returns_404(client):
+    # Seeded data has 0 learned terms; requesting learned_only should 404
+    r = client.get("/flashcards/random", params={"language_code": "ar", "learned_only": True})
+    assert r.status_code == 404
+    assert r.json().get("detail") in {"No flashcards available", "Language not found"}
+
