@@ -25,7 +25,7 @@ export const App: React.FC = () => {
   const [wasCorrect, setWasCorrect] = useState<boolean | null>(null)
 
   // Centralized Arabic font stack for consistency
-  const arabicFontFamily = '"KFGQPC Uthman Taha Naskh Regular", "Amiri", "Scheherazade New", "Noto Naskh Arabic", "Traditional Arabic", "Arabic Typesetting", "Simplified Arabic", "Tahoma", "Arial Unicode MS", serif'
+  const arabicFontFamily = '"Noto Naskh Arabic", serif, "Scheherazade New"'
 
   // Simple detector to see if a string contains Arabic characters
   const isArabicText = (text?: string | null): boolean => {
@@ -80,21 +80,10 @@ export const App: React.FC = () => {
     }
   }
 
-  const arabicStyle: React.CSSProperties = useMemo(() => ({
-    fontSize: '64px',
-    lineHeight: 1.2,
-    fontFamily: arabicFontFamily,
-    direction: 'rtl',
-    textAlign: 'center',
-    margin: '20px 0',
-    fontWeight: 'normal',
-    letterSpacing: '0.05em'
-  }), [])
-
   return (
     <div style={{ maxWidth: 760, margin: '0 auto', padding: 24, fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif' }}>
       <h1>Flashcards</h1>
-      <div style={{ marginBottom: 12 }}>
+      <div className="mode-selector">
         <label>
           Mode:&nbsp;
           <select value={mode} onChange={e => setMode(e.target.value as any)}>
@@ -102,12 +91,12 @@ export const App: React.FC = () => {
             <option value="english">Type English (show Arabic)</option>
           </select>
         </label>
-        <button style={{ marginLeft: 12 }} onClick={() => fetchCard(card?.id_vocabulary)} disabled={loading}>Next</button>
+        <button className="next-button" onClick={() => fetchCard(card?.id_vocabulary)} disabled={loading}>Next</button>
       </div>
 
       {card ? (
         <div>
-          <div style={arabicStyle}>
+          <div className="arabic-font flashcard-display">
             {mode === 'arabic' ? card.english_term : card.target_language_term}
           </div>
 
@@ -115,83 +104,68 @@ export const App: React.FC = () => {
             value={answer}
             onChange={e => setAnswer(e.target.value)}
             placeholder={mode === 'arabic' ? 'Type Arabic…' : 'Type English…'}
+            className="arabic-font flashcard-input"
             style={{
-              width: '100%',
-              padding: 12,
-              fontSize: 18,
-              fontFamily: mode === 'arabic' ? arabicFontFamily : undefined,
-              direction: mode === 'arabic' ? ('rtl' as const) : undefined,
               textAlign: mode === 'arabic' ? ('center' as const) : undefined,
             }}
             disabled={hasAnswered}
             onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
           />
                 {!hasAnswered ? (
-                  <button style={{ marginTop: 12 }} onClick={submit}>Check</button>
+                  <button className="button-primary" onClick={submit}>Check</button>
                 ) : (
-                  <button style={{ marginTop: 12 }} onClick={() => fetchCard(card?.id_vocabulary)}>
+                  <button className="button-primary" onClick={() => fetchCard(card?.id_vocabulary)}>
                     Continue
                   </button>
                 )}
 
                  {feedback && (
-                   <div style={{ marginTop: 12 }}>{feedback}</div>
+                   <div className="arabic-font feedback-message">{feedback}</div>
                  )}
 
                  {showConfetti && (
-                   <div style={{ 
-                     marginTop: 16, 
-                     fontSize: '48px', 
-                     textAlign: 'center',
-                     animation: 'bounce 0.6s ease-in-out'
-                   }}>
+                   <div className="confetti">
                      🎉
                    </div>
                  )}
 
                  {showDetailedInfo && card && (
-                   <div style={{ 
-                     marginTop: 20, 
-                     padding: 16, 
-                     backgroundColor: '#f0f8ff', 
-                     borderRadius: 8, 
-                     border: '1px solid #e0e0e0' 
-                   }}>
+                   <div className="details-panel">
                                           
-                     <div style={{ marginBottom: 12 }}>
+                     <div className="details-item">
                        <strong>English:</strong> {card.english_term}
                      </div>
                      
-                     <div style={{ marginBottom: 12 }}>
+                     <div className="details-item">
                        <strong>Arabic:</strong>{' '}
-                       <span style={{ fontFamily: arabicFontFamily, direction: 'rtl' as const, fontSize: '20px' }}>
+                       <span className="arabic-font arabic-details">
                          {card.target_language_term}
                        </span>
                      </div>
                      
                      {card.transliteration && (
-                       <div style={{ marginBottom: 12 }}>
+                       <div className="details-item">
                          <strong>Transliteration:</strong> {card.transliteration}
                        </div>
                      )}
                      
                      {card.example_sentence && (
-                       <div style={{ marginBottom: 12 }}>
+                       <div className="details-item">
                          <strong>Example:</strong>{' '}
-                         <span style={isArabicText(card.example_sentence) ? { fontFamily: arabicFontFamily, direction: 'rtl' as const } : undefined}>
+                         <span className="arabic-font example-sentence">
                            {card.example_sentence}
                          </span>
                        </div>
                      )}
                      
                      {card.example_sentence_explained && (
-                       <div style={{ marginBottom: 12 }}>
+                       <div className="details-item">
                          <strong>Example Translation:</strong> {card.example_sentence_explained}
                        </div>
                      )}
                      
                      {card.notes && (
-                       <div style={{ marginBottom: 12 }}>
+                       <div className="details-item">
                          <strong>Notes:</strong> {card.notes}
                        </div>
                      )}
