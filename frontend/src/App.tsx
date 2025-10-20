@@ -103,7 +103,7 @@ export const App: React.FC = () => {
           <input
             value={answer}
             onChange={e => setAnswer(e.target.value)}
-            placeholder={mode === 'arabic' ? 'Type Arabic…' : 'Type English…'}
+            placeholder={mode === 'arabic' ? 'Type Arabic' : 'Type English'}
             className="arabic-font flashcard-input"
             style={{
               textAlign: mode === 'arabic' ? ('center' as const) : undefined,
