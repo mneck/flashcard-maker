@@ -1,0 +1,129 @@
+/* Arabic Font Styling */
+.arabic-font {
+  font-family: 'Noto Naskh Arabic', serif;
+  direction: rtl; /* right-to-left for Arabic layout */
+  background-color: #f9f9f9;
+  color: #222;
+  font-size: 1.2em; /* Base larger font size */
+  font-weight: 400;
+}
+
+/* Main flashcard display */
+.flashcard-display {
+  font-size: 64px;
+  line-height: 1.2;
+  margin: 20px 0;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* Input field styling */
+.flashcard-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+}
+
+/* Arabic text in details section */
+.arabic-details {
+  font-size: 40px;
+}
+
+/* Example sentence styling */
+.example-sentence {
+  font-size: 24px;
+}
+
+/* Feedback message styling */
+.feedback-message {
+  margin-top: 12px;
+}
+
+/* Confetti animation */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.confetti {
+  margin-top: 16px;
+  font-size: 48px;
+  text-align: center;
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Details panel styling */
+.details-panel {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.details-item {
+  margin-bottom: 12px;
+}
+
+/* Button styling */
+.button-primary {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-primary:hover {
+  background-color: #0056b3;
+}
+
+.button-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Mode selector styling */
+.mode-selector {
+  margin-bottom: 12px;
+}
+
+.mode-selector label {
+  margin-right: 12px;
+}
+
+.mode-selector select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Next button styling */
+.next-button {
+  margin-left: 12px;
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.next-button:hover {
+  background-color: #218838;
+}
+
+.next-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
