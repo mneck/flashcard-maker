@@ -96,7 +96,7 @@ export const App: React.FC = () => {
 
       {card ? (
         <div>
-          <div className="arabic-font flashcard-display">
+          <div className={`${mode === 'arabic' ? 'english-font' : 'arabic-font'} flashcard-display`}>
             {mode === 'arabic' ? card.english_term : card.target_language_term}
           </div>
 
@@ -104,10 +104,7 @@ export const App: React.FC = () => {
             value={answer}
             onChange={e => setAnswer(e.target.value)}
             placeholder={mode === 'arabic' ? 'Type Arabic' : 'Type English'}
-            className="arabic-font flashcard-input"
-            style={{
-              textAlign: mode === 'arabic' ? ('center' as const) : undefined,
-            }}
+            className={`${mode === 'arabic' ? 'arabic-font' : 'english-font'} flashcard-input`}
             disabled={hasAnswered}
             onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
           />
@@ -120,7 +117,7 @@ export const App: React.FC = () => {
                 )}
 
                  {feedback && (
-                   <div className="arabic-font feedback-message">{feedback}</div>
+                   <div className={`${isArabicText(feedback) ? 'arabic-font' : 'english-font'} feedback-message`}>{feedback}</div>
                  )}
 
                  {showConfetti && (
@@ -133,7 +130,7 @@ export const App: React.FC = () => {
                    <div className="details-panel">
                                           
                      <div className="details-item">
-                       <strong>English:</strong> {card.english_term}
+                       <strong>English:</strong> <span className="english-font">{card.english_term}</span>
                      </div>
                      
                      <div className="details-item">
@@ -145,14 +142,14 @@ export const App: React.FC = () => {
                      
                      {card.transliteration && (
                        <div className="details-item">
-                         <strong>Transliteration:</strong> {card.transliteration}
+                         <strong>Transliteration:</strong> <span className="english-font">{card.transliteration}</span>
                        </div>
                      )}
                      
                      {card.example_sentence && (
                        <div className="details-item">
                          <strong>Example:</strong>{' '}
-                         <span className="arabic-font example-sentence">
+                         <span className={`${isArabicText(card.example_sentence) ? 'arabic-font' : 'english-font'} example-sentence`}>
                            {card.example_sentence}
                          </span>
                        </div>
@@ -160,13 +157,13 @@ export const App: React.FC = () => {
                      
                      {card.example_sentence_explained && (
                        <div className="details-item">
-                         <strong>Example Translation:</strong> {card.example_sentence_explained}
+                         <strong>Example Translation:</strong> <span className="english-font">{card.example_sentence_explained}</span>
                        </div>
                      )}
                      
                      {card.notes && (
                        <div className="details-item">
-                         <strong>Notes:</strong> {card.notes}
+                         <strong>Notes:</strong> <span className="english-font">{card.notes}</span>
                        </div>
                      )}
                    </div>

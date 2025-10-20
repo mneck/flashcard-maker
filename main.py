@@ -97,7 +97,7 @@ def create_app(session_maker: sessionmaker) -> FastAPI:
                 term.learned = True
             db.commit()
 
-        message = "Correct 🎉" if correct else f"Incorrect. The answer is: {correct_answer}"
+        message = "برافو! 🎉" if correct else f"Incorrect. The answer is: {correct_answer}"
         return AnswerResponse(correct=correct, correct_answer=correct_answer, message=message)
 
     @app.get("/flashcards/stats")
